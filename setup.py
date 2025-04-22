@@ -9,11 +9,15 @@ setup(
     name="weibo-hotsearch-mcp",
     version="0.1.0",
     author="RusianHu",
-    author_email="your.email@example.com",  # 请替换为你的邮箱
+    author_email="rusianhu@example.com",
     description="微博热搜MCP服务",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/weibo_hotsearch_mcp",  # 请替换为你的GitHub仓库地址
+    url="https://github.com/RusianHu/weibo_hotsearch_mcp",
+    project_urls={
+        "Bug Tracker": "https://github.com/RusianHu/weibo_hotsearch_mcp/issues",
+        "Source Code": "https://github.com/RusianHu/weibo_hotsearch_mcp",
+    },
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
