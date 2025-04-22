@@ -21,30 +21,51 @@ async def get_weibo_hot_async() -> List[str]:
         List[str]: 热搜列表，如果获取失败则返回错误信息
     """
     try:
+        print(f"开始请求微博热搜 API: {HOT_SEARCH_URL}")
+        print(f"请求头: {DEFAULT_HEADERS}")
+
         async with httpx.AsyncClient() as client:
             response = await client.get(HOT_SEARCH_URL, headers=DEFAULT_HEADERS, timeout=10.0)
+            print(f"响应状态码: {response.status_code}")
 
             if response.status_code == 200:
                 result = response.json()
+                print(f"响应数据类型: {type(result)}")
+                print(f"响应数据结构: {list(result.keys()) if isinstance(result, dict) else 'Not a dict'}")
 
                 # 检查响应是否包含有效数据
                 if result.get('ok') == 1 and 'data' in result and 'cards' in result['data']:
+                    print(f"'ok' 字段存在且为1，'data' 和 'cards' 字段也存在")
+                    print(f"cards 数量: {len(result['data']['cards'])}")
+
                     hot_searches = []
 
                     # 提取热搜数据
-                    for card in result['data']['cards']:
+                    for i, card in enumerate(result['data']['cards']):
+                        print(f"Processing card {i+1}/{len(result['data']['cards'])}")
                         if 'card_group' in card:
-                            for item in card['card_group']:
+                            print(f"card_group 存在，包含 {len(card['card_group'])} 个项目")
+                            for j, item in enumerate(card['card_group']):
+                                print(f"  检查项目 {j+1}/{len(card['card_group'])}: 字段 = {list(item.keys())}")
                                 if 'desc' in item:
+                                    print(f"  找到 'desc' 字段: {item['desc']}")
                                     hot_searches.append(item['desc'])
+                        else:
+                            print(f"card_group 不存在于当前 card，字段 = {list(card.keys())}")
 
+                    print(f"提取到 {len(hot_searches)} 条热搜数据")
                     return hot_searches[:10]  # 只返回前10条
                 else:
+                    print(f"API 响应格式不符合预期: ok={result.get('ok')}, 字段={list(result.keys())}")
+                    if 'data' in result:
+                        print(f"data 字段内容: {list(result['data'].keys()) if isinstance(result['data'], dict) else 'Not a dict'}")
                     return ["获取微博热搜失败: 响应格式不符合预期"]
             else:
                 return [f"获取微博热搜失败: HTTP状态码 {response.status_code}"]
     except Exception as e:
-        return [f"获取微博热搜失败: {str(e)}"]
+        error_msg = str(e) if str(e) else "未知异常"
+        print(f"异步获取热搜异常: {error_msg}")
+        return [f"获取微博热搜失败: {error_msg}"]
 
 def get_weibo_hot() -> List[str]:
     """
@@ -73,8 +94,10 @@ def get_weibo_hot() -> List[str]:
                 # 如果事件循环没有运行，使用run_until_complete
                 return loop.run_until_complete(get_weibo_hot_async())
         except Exception as e:
+            error_msg = str(e) if str(e) else "未知异常"
+            print(f"同步获取热搜异常 (重试{i+1}/3): {error_msg}")
             if i == 2:  # 最后一次重试仍失败
-                return [f"获取微博热搜失败: {str(e)}"]
+                return [f"获取微博热搜失败: {error_msg}"]
             time.sleep(2)  # 等待2秒后重试
 
     return ["获取微博热搜失败: 未知错误"]
