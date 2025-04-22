@@ -1,7 +1,9 @@
 import httpx
 import asyncio
 import time
-from typing import List
+import traceback
+import sys
+from typing import List, Dict, Any
 
 # 热搜API端点 - 微博移动版API，无需Cookie
 HOT_SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
@@ -64,7 +66,10 @@ async def get_weibo_hot_async() -> List[str]:
                 return [f"获取微博热搜失败: HTTP状态码 {response.status_code}"]
     except Exception as e:
         error_msg = str(e) if str(e) else "未知异常"
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        tb_str = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
         print(f"异步获取热搜异常: {error_msg}")
+        print(f"异常详情:\n{tb_str}")
         return [f"获取微博热搜失败: {error_msg}"]
 
 def get_weibo_hot() -> List[str]:
@@ -95,12 +100,47 @@ def get_weibo_hot() -> List[str]:
                 return loop.run_until_complete(get_weibo_hot_async())
         except Exception as e:
             error_msg = str(e) if str(e) else "未知异常"
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            tb_str = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
             print(f"同步获取热搜异常 (重试{i+1}/3): {error_msg}")
+            print(f"异常详情:\n{tb_str}")
             if i == 2:  # 最后一次重试仍失败
                 return [f"获取微博热搜失败: {error_msg}"]
             time.sleep(2)  # 等待2秒后重试
 
-    return ["获取微博热搜失败: 未知错误"]
+    # 如果异步方式失败，尝试使用同步方式
+    print("异步方式失败，尝试使用同步方式获取热搜数据")
+    try:
+        with httpx.Client() as client:
+            print(f"开始同步请求微博热搜 API: {HOT_SEARCH_URL}")
+            response = client.get(HOT_SEARCH_URL, headers=DEFAULT_HEADERS, timeout=10.0)
+            print(f"响应状态码: {response.status_code}")
+
+            if response.status_code == 200:
+                result = response.json()
+                print(f"响应数据类型: {type(result)}")
+
+                if result.get('ok') == 1 and 'data' in result and 'cards' in result['data']:
+                    hot_searches = []
+
+                    for card in result['data']['cards']:
+                        if 'card_group' in card:
+                            for item in card['card_group']:
+                                if 'desc' in item:
+                                    hot_searches.append(item['desc'])
+
+                    if hot_searches:
+                        print(f"同步方式提取到 {len(hot_searches)} 条热搜数据")
+                        return hot_searches[:10]
+
+        return ["获取微博热搜失败: 同步方式也失败"]
+    except Exception as e:
+        error_msg = str(e) if str(e) else "未知异常"
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        tb_str = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+        print(f"同步备用方式异常: {error_msg}")
+        print(f"异常详情:\n{tb_str}")
+        return [f"获取微博热搜失败: 所有方式均失败"]
 
 if __name__ == '__main__':
     hot_list = get_weibo_hot()
