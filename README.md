@@ -2,30 +2,63 @@
 
 一个简单的微博热搜MCP服务，你可以在Claude AI中使用。本服务提供基础版和高级版两个版本，您可以根据需要选择安装。
 
-## 一、准备工作
+## 一、服务功能说明
 
-### 1.1 环境要求
+### 1.1 基础版功能
+
+基础版MCP服务提供以下功能：
+
+1. **工具(Tool)**: `get_weibo_hot` - 获取微博热搜榜前10条内容
+2. **资源(Resource)**: `weibo://hotsearch` - 提供微博热搜数据作为资源
+3. **提示(Prompt)**: `ask_about_hot_topics` - 生成关于热门话题的提示
+
+### 1.2 高级版功能
+
+高级版MCP服务在基础版的基础上，增加了以下功能：
+
+1. **工具(Tool)**:
+   - `get_weibo_hot` - 获取微博热搜榜前10条内容，并带有日志记录
+   - `get_top_n_hot` - 获取指定数量的微博热搜条目
+   - `search_hot_topics` - 搜索包含指定关键词的热搜条目
+   - `get_hot_search_stats` - 获取热搜统计信息
+
+2. **资源(Resource)**:
+   - `weibo://hotsearch` - 提供微博热搜数据作为资源
+   - `weibo://hotsearch/{count}` - 获取指定数量的微博热搜条目
+
+3. **提示(Prompt)**:
+   - `ask_about_hot_topics` - 生成关于热门话题的提示
+   - `compare_hot_topics` - 生成比较热门话题的提示
+
+4. **高级特性**:
+   - 数据缓存 - 避免频繁请求微博服务器
+   - 错误处理 - 更健壮的错误处理机制
+   - 进度报告 - 在处理过程中提供进度更新
+
+## 二、准备工作
+
+### 2.1 环境要求
 
 - Python 3.10 或更高版本
 - pip 包管理器
 - 网络连接（用于获取微博热搜数据）
 
-### 1.2 依赖包
+### 2.2 依赖包
 
 - fastmcp：MCP服务框架
 - requests：网络请求库
 - beautifulsoup4：HTML解析库
 
-## 二、安装步骤
+## 三、安装步骤
 
-### 2.1 安装方式一：使用安装脚本（推荐）
+### 3.1 安装方式一：使用安装脚本（推荐）
 
 1. 确保您已下载本项目的所有文件
 2. 双击运行 `install_weibo_mcp.bat` 脚本
 3. 选择要安装的版本（基础版或高级版）
 4. 等待安装完成
 
-### 2.2 安装方式二：手动安装
+### 3.2 安装方式二：手动安装
 
 1. 打开命令提示符或PowerShell
 2. 切换到项目目录
@@ -41,7 +74,7 @@
    python -m fastmcp install weibo_hotsearch_mcp_advanced.py --name "微博热搜高级版" --with requests --with beautifulsoup4
    ```
 
-## 三、在Claude Desktop中使用
+## 四、在Claude Desktop中使用
 
 安装完成后，MCP服务将自动在Claude Desktop中注册。使用步骤如下：
 
@@ -50,9 +83,9 @@
 3. 在弹出的菜单中选择"微博热搜"或"微博热搜高级版"
 4. 现在您可以在对话中使用微博热搜服务了
 
-## 四、在CLine插件中配置（VSCode、JetBrains等）
+## 五、在CLine插件中配置（VSCode、JetBrains等）
 
-### 4.1 VSCode中配置CLine插件
+### 5.1 VSCode中配置CLine插件
 
 1. 确保已安装CLine插件
 2. 找到CLine的MCP配置文件，位于：
@@ -82,7 +115,7 @@
 - 注意：将路径中的`{weibo_hotsearch_mcp}`替换为您的weibo_hotsearch_mcp文件夹目录
 - 如果您使用的是基础版，请将路径中的`weibo_hotsearch_mcp_advanced.py`替换为`weibo_hotsearch_mcp.py`
 
-### 4.2 JetBrains IDE中配置CLine插件
+### 5.2 JetBrains IDE中配置CLine插件
 
 1. 确保已安装CLine插件
 2. 在JetBrains IDE中，CLine插件使用与VSCode相同的配置文件
@@ -122,7 +155,7 @@
 
 注意：将路径中的`<用户名>`替换为您的Windows用户名
 
-### 4.3 RooCode插件配置
+### 5.3 RooCode插件配置
 
 1. 确保已安装RooCode插件
 2. RooCode插件也使用与CLine相同的MCP配置文件
@@ -162,17 +195,17 @@
 
 注意：将路径中的`{weibo_hotsearch_mcp}`替换为您的weibo_hotsearch_mcp文件夹目录
 
-## 五、使用示例
+## 六、使用示例
 
 安装并配置完成后，您可以在Claude中使用以下提示来获取微博热搜：
 
-### 5.1 基础版使用示例
+### 6.1 基础版使用示例
 
 1. "获取当前微博热搜榜"
 2. "分析当前微博热搜话题"
 3. "查看微博热门话题"
 
-### 5.2 高级版使用示例
+### 6.2 高级版使用示例
 
 1. "获取前5条微博热搜"
 2. "搜索包含'电影'的热搜话题"
@@ -180,39 +213,6 @@
 4. "比较当前热门话题的异同点"
 
 Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
-
-## 六、服务功能说明
-
-### 6.1 基础版功能
-
-基础版MCP服务提供以下功能：
-
-1. **工具(Tool)**: `get_weibo_hot` - 获取微博热搜榜前10条内容
-2. **资源(Resource)**: `weibo://hotsearch` - 提供微博热搜数据作为资源
-3. **提示(Prompt)**: `ask_about_hot_topics` - 生成关于热门话题的提示
-
-### 6.2 高级版功能
-
-高级版MCP服务在基础版的基础上，增加了以下功能：
-
-1. **工具(Tool)**:
-   - `get_weibo_hot` - 获取微博热搜榜前10条内容，并带有日志记录
-   - `get_top_n_hot` - 获取指定数量的微博热搜条目
-   - `search_hot_topics` - 搜索包含指定关键词的热搜条目
-   - `get_hot_search_stats` - 获取热搜统计信息
-
-2. **资源(Resource)**:
-   - `weibo://hotsearch` - 提供微博热搜数据作为资源
-   - `weibo://hotsearch/{count}` - 获取指定数量的微博热搜条目
-
-3. **提示(Prompt)**:
-   - `ask_about_hot_topics` - 生成关于热门话题的提示
-   - `compare_hot_topics` - 生成比较热门话题的提示
-
-4. **高级特性**:
-   - 数据缓存 - 避免频繁请求微博服务器
-   - 错误处理 - 更健壮的错误处理机制
-   - 进度报告 - 在处理过程中提供进度更新
 
 ## 七、故障排除
 
