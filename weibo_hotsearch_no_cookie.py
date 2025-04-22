@@ -1,9 +1,15 @@
+"""
+微博热搜获取模块 (无需Cookie版)
+
+使用微博移动版API获取热搜数据，无需提供Cookie。
+"""
+
 import httpx
 import asyncio
+from typing import List, Dict, Any, Optional
 import time
-from typing import List
 
-# 热搜API端点 - 微博移动版API，无需Cookie
+# 热搜API端点
 HOT_SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
 
 # 请求头 - 不包含Cookie
@@ -16,28 +22,28 @@ DEFAULT_HEADERS = {
 async def get_weibo_hot_async() -> List[str]:
     """
     异步获取微博热搜榜前10条内容
-
+    
     Returns:
         List[str]: 热搜列表，如果获取失败则返回错误信息
     """
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(HOT_SEARCH_URL, headers=DEFAULT_HEADERS, timeout=10.0)
-
+            
             if response.status_code == 200:
                 result = response.json()
-
+                
                 # 检查响应是否包含有效数据
                 if result.get('ok') == 1 and 'data' in result and 'cards' in result['data']:
                     hot_searches = []
-
+                    
                     # 提取热搜数据
                     for card in result['data']['cards']:
                         if 'card_group' in card:
                             for item in card['card_group']:
                                 if 'desc' in item:
                                     hot_searches.append(item['desc'])
-
+                    
                     return hot_searches[:10]  # 只返回前10条
                 else:
                     return ["获取微博热搜失败: 响应格式不符合预期"]
@@ -49,7 +55,7 @@ async def get_weibo_hot_async() -> List[str]:
 def get_weibo_hot() -> List[str]:
     """
     同步获取微博热搜榜前10条内容
-
+    
     Returns:
         List[str]: 热搜列表，如果获取失败则返回错误信息
     """
@@ -61,7 +67,7 @@ def get_weibo_hot() -> List[str]:
             if i == 2:  # 最后一次重试仍失败
                 return [f"获取微博热搜失败: {str(e)}"]
             time.sleep(2)  # 等待2秒后重试
-
+    
     return ["获取微博热搜失败: 未知错误"]
 
 if __name__ == '__main__':

@@ -27,8 +27,8 @@ setup(
     python_requires=">=3.10",
     install_requires=[
         "fastmcp>=2.0.0",
-        "requests",
-        "beautifulsoup4",
+        "httpx",
+        "asyncio",
     ],
     entry_points={
         "console_scripts": [

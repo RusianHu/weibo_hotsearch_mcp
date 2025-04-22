@@ -9,7 +9,7 @@ from fastmcp import FastMCP
 import weibo_hotsearch
 
 # 创建MCP服务
-mcp = FastMCP("微博热搜", dependencies=["requests", "beautifulsoup4"])
+mcp = FastMCP("微博热搜", dependencies=["httpx", "asyncio"])
 
 @mcp.tool()
 def get_weibo_hot() -> list:

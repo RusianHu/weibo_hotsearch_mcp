@@ -46,8 +46,8 @@
 ### 2.2 依赖包
 
 - fastmcp：MCP服务框架
-- requests：网络请求库
-- beautifulsoup4：HTML解析库
+- httpx：异步HTTP客户端
+- asyncio：异步编程库
 
 ## 三、安装步骤
 
@@ -138,45 +138,37 @@ C:\Python<版本>\Scripts\
 pip show -f weibo-hotsearch-mcp
 ```
 
-## 四、配置Cookie数据
+## 四、使用说明
 
-本服务需要通过环境变量传递Cookie数据才能正常工作。这是出于以下原因：
+本服务使用微博移动版API获取热搜数据，无需提供Cookie即可正常工作。这带来以下优势：
 
-- 微博网站需要Cookie才能正常访问热搜数据
-- 保护用户隐私，避免在代码中硬编码Cookie
-- 允许用户使用自己的微博账号权限获取数据
+- **无需登录**：不需要微博账号即可获取热搜数据
+- **更高的安全性**：无需存储敏感的Cookie信息
+- **更简单的配置**：无需额外的环境变量配置
 
-### 4.1 通过mcp_settings.json配置Cookie（必需）
+### 4.1 在Claude Desktop中使用
 
-**重要提示：** 要使用微博热搜服务，必须配置 WEIBO_COOKIE 环境变量，否则服务将无法获取微博热搜数据。
+安装完成后，MCP服务将自动在Claude Desktop中注册。使用步骤如下：
+
+1. 打开Claude Desktop应用
+2. 在对话框中，点击右下角的"+"按钮
+3. 在弹出的菜单中选择"微博热搜"或"微博热搜高级版"
+4. 现在您可以在对话中使用微博热搜服务了
+
+### 4.2 在CLine插件中配置
+
+如果您使用VSCode或JetBrains IDE的CLine插件，可以按以下方式配置：
 
 1. 打开MCP配置文件（位于`%APPDATA%\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\mcp_settings.json`）
-2. 在微博热搜服务配置中添加`env`对象，如下所示：
+2. 在微博热搜服务配置中添加配置，如下所示：
 
 ```json
 "weibo-hotsearch": {
   "command": "weibo-mcp-advanced",
   "disabled": false,
-  "env": {
-    "WEIBO_COOKIE": "你的微博Cookie数据"
-  },
   "alwaysAllow": []
 }
 ```
-
-3. 将`"你的微博Cookie数据"`替换为您的实际Cookie值
-
-### 4.2 获取微博Cookie
-
-1. 登录微博网站(https://weibo.com)
-2. 在浏览器中打开开发者工具（按F12或右键点击页面并选择"检查"）
-3. 切换到"网络"(Network)选项卡
-4. 刷新页面
-5. 在请求列表中找到任意一个请求，点击它
-6. 在请求头(Headers)中找到"Cookie"字段
-7. 复制完整的Cookie值
-
-**注意**：Cookie中包含敏感信息，请勿分享给他人或在公共场合暴露。
 
 ## 五、在Claude Desktop中使用
 
@@ -206,9 +198,6 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch": {
   "command": "weibo-mcp-advanced",
   "disabled": false,
-  "env": {
-    "WEIBO_COOKIE": "你的微博Cookie数据"
-  },
   "alwaysAllow": []
 }
 ```
@@ -232,9 +221,6 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch": {
   "command": "weibo-mcp-basic",
   "disabled": false,
-  "env": {
-    "WEIBO_COOKIE": "你的微博Cookie数据"
-  },
   "alwaysAllow": []
 }
 ```
@@ -244,9 +230,6 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch-advanced": {
   "command": "weibo-mcp-advanced",
   "disabled": false,
-  "env": {
-    "WEIBO_COOKIE": "你的微博Cookie数据"
-  },
   "alwaysAllow": []
 }
 ```
@@ -266,9 +249,6 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch": {
   "command": "weibo-mcp-basic",
   "disabled": false,
-  "env": {
-    "WEIBO_COOKIE": "你的微博Cookie数据"
-  },
   "alwaysAllow": []
 }
 ```
@@ -278,9 +258,6 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch-advanced": {
   "command": "weibo-mcp-advanced",
   "disabled": false,
-  "env": {
-    "WEIBO_COOKIE": "你的微博Cookie数据"
-  },
   "alwaysAllow": []
 }
 ```
@@ -315,10 +292,9 @@ Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
    - 尝试重新安装包：`pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git --force-reinstall`
 
 2. **无法获取热搜数据**：
-   - 检查是否已设置 WEIBO_COOKIE 环境变量（这是必需的）
-   - 确认设置的Cookie是否有效（Cookie可能会过期）
    - 检查网络连接
    - 确认微博网站是否可访问
+   - 检查微博移动版API是否发生变化
 
 3. **Claude无法识别服务**：
    - 重新安装MCP服务
@@ -338,7 +314,7 @@ Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
 如果您想在从源代码安装时使用不同的服务名称，可以修改安装命令中的`--name`参数：
 
 ```
-python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with requests --with beautifulsoup4
+python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with httpx --with asyncio
 ```
 
 注意：通过pip安装时，服务名称已固定为"微博热搜"（基础版）和"微博热搜高级版"（高级版）。

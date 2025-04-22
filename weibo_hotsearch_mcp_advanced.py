@@ -11,7 +11,7 @@ import time
 from typing import Optional, List, Dict
 
 # 创建MCP服务
-mcp = FastMCP("微博热搜高级版", dependencies=["requests", "beautifulsoup4"])
+mcp = FastMCP("微博热搜高级版", dependencies=["httpx", "asyncio"])
 
 # 缓存热搜数据，避免频繁请求
 cache = {
