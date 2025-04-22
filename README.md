@@ -51,14 +51,42 @@
 
 ## 三、安装步骤
 
-### 3.1 安装方式一：使用安装脚本（推荐）
+### 3.1 安装方式一：通过 pip 从 GitHub 安装（推荐）
+
+您可以直接通过 pip 从 GitHub 安装本项目：
+
+```bash
+pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git
+```
+
+安装完成后，您可以通过以下命令启动服务：
+
+**基础版：**
+```bash
+weibo-mcp-basic
+```
+
+**高级版：**
+```bash
+weibo-mcp-advanced
+```
+
+或者使用通用命令（默认启动基础版，使用 `--advanced` 参数启动高级版）：
+```bash
+weibo-mcp
+```
+```bash
+weibo-mcp --advanced
+```
+
+### 3.2 安装方式二：使用安装脚本
 
 1. 确保您已下载本项目的所有文件
 2. 双击运行 `install_weibo_mcp.bat` 脚本
 3. 选择要安装的版本（基础版或高级版）
 4. 等待安装完成
 
-### 3.2 安装方式二：手动安装
+### 3.3 安装方式三：手动安装
 
 1. 打开命令提示符或PowerShell
 2. 切换到项目目录
