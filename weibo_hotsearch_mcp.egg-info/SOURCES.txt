@@ -1,0 +1,16 @@
+LICENSE
+MANIFEST.in
+README.md
+README.rst
+setup.py
+weibo_hotsearch_mcp/__init__.py
+weibo_hotsearch_mcp/advanced.py
+weibo_hotsearch_mcp/basic.py
+weibo_hotsearch_mcp/cli.py
+weibo_hotsearch_mcp/weibo_hotsearch.py
+weibo_hotsearch_mcp.egg-info/PKG-INFO
+weibo_hotsearch_mcp.egg-info/SOURCES.txt
+weibo_hotsearch_mcp.egg-info/dependency_links.txt
+weibo_hotsearch_mcp.egg-info/entry_points.txt
+weibo_hotsearch_mcp.egg-info/requires.txt
+weibo_hotsearch_mcp.egg-info/top_level.txt
