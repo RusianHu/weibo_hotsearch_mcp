@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="weibo-hotsearch-mcp",
-    version="1.0.0",
+    version="1.0.1",
     author="RusianHu",
     author_email="rusianhu@example.com",
     description="微博热搜MCP服务",
