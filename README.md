@@ -51,12 +51,18 @@
 
 ## 三、安装步骤
 
-### 3.1 安装方式一：通过 pip 从 GitHub 安装（推荐）
+### 3.1 安装方式：通过 pip 从 GitHub 安装
 
 您可以直接通过 pip 从 GitHub 安装本项目：
 
 ```bash
 pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git
+```
+
+如果您需要使用代理，可以添加代理参数：
+
+```bash
+pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git --proxy socks5://127.0.0.1:10808
 ```
 
 安装完成后，您可以通过以下命令启动服务：
@@ -102,16 +108,28 @@ print("安装成功")
 
 ### 3.3 安装位置
 
-通过 pip 安装后，包文件将被安装到 Python 的 site-packages 目录中，通常位于：
+通过 pip 安装后，包文件将被安装到 Python 的 site-packages 目录中，具体路径取决于您的 Python 安装位置，通常类似于：
 
 ```
 C:\Users\<用户名>\AppData\Local\Programs\Python\Python<版本>\Lib\site-packages\weibo_hotsearch_mcp
 ```
 
-可执行文件将被安装到 Python 的 Scripts 目录中：
+或
+
+```
+C:\Python<版本>\Lib\site-packages\weibo_hotsearch_mcp
+```
+
+可执行文件将被安装到 Python 的 Scripts 目录中，同样取决于您的 Python 安装位置：
 
 ```
 C:\Users\<用户名>\AppData\Local\Programs\Python\Python<版本>\Scripts\
+```
+
+或
+
+```
+C:\Python<版本>\Scripts\
 ```
 
 您可以通过以下命令查看包的具体安装位置：
@@ -148,6 +166,9 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch": {
   "command": "weibo-mcp-advanced",
   "disabled": false,
+  "env": {
+    "WEIBO_COOKIE": "你的微博Cookie数据"
+  },
   "alwaysAllow": []
 }
 ```
@@ -171,6 +192,9 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch": {
   "command": "weibo-mcp-basic",
   "disabled": false,
+  "env": {
+    "WEIBO_COOKIE": "你的微博Cookie数据"
+  },
   "alwaysAllow": []
 }
 ```
@@ -180,6 +204,9 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch-advanced": {
   "command": "weibo-mcp-advanced",
   "disabled": false,
+  "env": {
+    "WEIBO_COOKIE": "你的微博Cookie数据"
+  },
   "alwaysAllow": []
 }
 ```
@@ -199,6 +226,9 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch": {
   "command": "weibo-mcp-basic",
   "disabled": false,
+  "env": {
+    "WEIBO_COOKIE": "你的微博Cookie数据"
+  },
   "alwaysAllow": []
 }
 ```
@@ -208,6 +238,9 @@ pip show -f weibo-hotsearch-mcp
 "weibo-hotsearch-advanced": {
   "command": "weibo-mcp-advanced",
   "disabled": false,
+  "env": {
+    "WEIBO_COOKIE": "你的微博Cookie数据"
+  },
   "alwaysAllow": []
 }
 ```
@@ -242,8 +275,8 @@ Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
    - 尝试重新安装包：`pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git --force-reinstall`
 
 2. **无法获取热搜数据**：
-   - 检查是否已设置 WEIBO_COOKIE 环境变量
-   - 确认设置的Cookie是否有效
+   - 检查是否已设置 WEIBO_COOKIE 环境变量（这是必需的）
+   - 确认设置的Cookie是否有效（Cookie可能会过期）
    - 检查网络连接
    - 确认微博网站是否可访问
 
@@ -262,19 +295,29 @@ Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
 
 ### 8.1 自定义服务名称
 
-如果您想使用不同的服务名称，可以修改安装命令中的`--name`参数：
+如果您想在从源代码安装时使用不同的服务名称，可以修改安装命令中的`--name`参数：
 
 ```
 python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with requests --with beautifulsoup4
 ```
 
+注意：通过pip安装时，服务名称已固定为"微博热搜"（基础版）和"微博热搜高级版"（高级版）。
+
 ### 8.2 修改热搜数量
 
-如果您想修改返回的热搜数量，可以通过命令行参数或环境变量来配置，无需修改代码。
+在高级版中，您可以使用 `get_top_n_hot` 工具指定要获取的热搜数量，无需修改代码。
 
 ### 8.3 自定义缓存时间
 
-在高级版中，您可以通过环境变量 `CACHE_TTL` 来调整缓存有效期。
+在高级版中，缓存有效期默认为5分钟（300秒）。如果您需要修改缓存时间，可以编辑安装目录中的 `weibo_hotsearch_mcp/advanced.py` 文件，找到并修改以下代码行：
+
+```python
+cache = {
+    "data": None,
+    "timestamp": 0,
+    "ttl": 300  # 缓存有效期5分钟，可以根据需要调整此值
+}
+```
 
 ### 8.4 配置Cookie数据
 
@@ -286,7 +329,7 @@ python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with
 
 #### 8.4.1 通过mcp_settings.json配置Cookie（必需）
 
-要使用微博热搜服务，必须配置 WEIBO_COOKIE 环境变量：
+**重要提示：** 要使用微博热搜服务，必须配置 WEIBO_COOKIE 环境变量，否则服务将无法获取微博热搜数据。
 
 1. 打开MCP配置文件（位于`%APPDATA%\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\mcp_settings.json`）
 2. 在微博热搜服务配置中添加`env`对象，如下所示：
@@ -304,8 +347,6 @@ python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with
 
 3. 将`"你的微博Cookie数据"`替换为您的实际Cookie值
 
-> **重要提示：** 如果未设置 WEIBO_COOKIE 环境变量，服务将无法正常获取微博热搜数据。
-
 #### 8.4.2 获取微博Cookie
 
 1. 登录微博网站(https://weibo.com)
@@ -318,34 +359,6 @@ python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with
 
 **注意**：Cookie中包含敏感信息，请勿分享给他人或在公共场合暴露。
 
-#### 8.4.3 其他MCP服务的Cookie配置
-
-同样的方法也适用于其他MCP服务，如高德地图服务等。您只需要在相应的服务配置中添加`env`对象，并设置所需的环境变量即可。例如：
-
-```json
-"amap-amap-sse": {
-  "url": "https://mcp.amap.com/sse?key=YOUR_API_KEY",
-  "env": {
-    "COOKIE": "你的高德地图Cookie数据"
-  }
-}
-```
-
 ## 九、许可证
 
-本项目采用 [MIT 许可证](./LICENSE) 开源。MIT 许可证是一种宽松的软件许可证，它允许任何人以任何方式使用本代码，只要保留原始许可证和版权声明。
-
-### 9.1 MIT 许可证主要条款
-
-- 允许任何人自由使用、复制、修改、合并、发布、分发、再许可和/或销售本软件的副本
-- 要求在所有副本或实质性使用本软件的地方包含原始许可证和版权声明
-- 软件按"原样"提供，不提供任何形式的保证
-
-### 9.2 使用本项目
-
-如果您想在自己的项目中使用本代码，只需确保：
-
-1. 包含原始的 LICENSE 文件
-2. 保留原始的版权声明
-
-完整的许可证文本可以在项目根目录的 [LICENSE](./LICENSE) 文件中找到。
+本项目采用 [MIT 许可证](./LICENSE) 开源。
