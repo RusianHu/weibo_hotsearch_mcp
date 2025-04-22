@@ -1,10 +1,12 @@
 Metadata-Version: 2.4
 Name: weibo-hotsearch-mcp
-Version: 0.1.0
+Version: 1.0.1
 Summary: 微博热搜MCP服务
 Home-page: https://github.com/RusianHu/weibo_hotsearch_mcp
 Author: RusianHu
 Author-email: rusianhu@example.com
+Project-URL: Bug Tracker, https://github.com/RusianHu/weibo_hotsearch_mcp/issues
+Project-URL: Source Code, https://github.com/RusianHu/weibo_hotsearch_mcp
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
@@ -12,8 +14,8 @@ Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: fastmcp>=2.0.0
-Requires-Dist: requests
-Requires-Dist: beautifulsoup4
+Requires-Dist: httpx
+Requires-Dist: asyncio
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
@@ -21,6 +23,7 @@ Dynamic: description
 Dynamic: description-content-type
 Dynamic: home-page
 Dynamic: license-file
+Dynamic: project-url
 Dynamic: requires-dist
 Dynamic: requires-python
 Dynamic: summary
@@ -73,35 +76,107 @@ Dynamic: summary
 ### 2.2 依赖包
 
 - fastmcp：MCP服务框架
-- requests：网络请求库
-- beautifulsoup4：HTML解析库
+- httpx：异步HTTP客户端
+- asyncio：异步编程库
 
 ## 三、安装步骤
 
-### 3.1 安装方式一：使用安装脚本（推荐）
+### 3.1 安装方式：通过 pip 从 GitHub 安装
 
-1. 确保您已下载本项目的所有文件
-2. 双击运行 `install_weibo_mcp.bat` 脚本
-3. 选择要安装的版本（基础版或高级版）
-4. 等待安装完成
+您可以直接通过 pip 从 GitHub 安装本项目：
 
-### 3.2 安装方式二：手动安装
+```bash
+pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git
+```
 
-1. 打开命令提示符或PowerShell
-2. 切换到项目目录
-3. 执行以下命令：
+如果您需要使用代理，可以添加代理参数：
 
-   **基础版：**
-   ```
-   python -m fastmcp install weibo_hotsearch_mcp.py --name "微博热搜" --with requests --with beautifulsoup4
-   ```
+```bash
+pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git --proxy socks5://127.0.0.1:10808
+```
 
-   **高级版：**
-   ```
-   python -m fastmcp install weibo_hotsearch_mcp_advanced.py --name "微博热搜高级版" --with requests --with beautifulsoup4
-   ```
+安装完成后，您可以通过以下命令启动服务：
 
-## 四、在Claude Desktop中使用
+**基础版：**
+```bash
+weibo-mcp-basic
+```
+
+**高级版：**
+```bash
+weibo-mcp-advanced
+```
+
+或者使用通用命令（默认启动基础版，使用 `--advanced` 参数启动高级版）：
+```bash
+weibo-mcp
+```
+```bash
+weibo-mcp --advanced
+```
+
+### 3.2 验证安装
+
+安装完成后，您可以通过以下命令验证安装是否成功：
+
+```bash
+pip list | findstr weibo
+```
+
+如果安装成功，您将看到类似以下输出：
+
+```
+weibo-hotsearch-mcp 0.1.0
+```
+
+您也可以通过导入包来验证安装：
+
+```python
+import weibo_hotsearch_mcp
+print("安装成功")
+```
+
+### 3.3 安装位置
+
+通过 pip 安装后，包文件将被安装到 Python 的 site-packages 目录中，具体路径取决于您的 Python 安装位置，通常类似于：
+
+```
+C:\Users\<用户名>\AppData\Local\Programs\Python\Python<版本>\Lib\site-packages\weibo_hotsearch_mcp
+```
+
+或
+
+```
+C:\Python<版本>\Lib\site-packages\weibo_hotsearch_mcp
+```
+
+可执行文件将被安装到 Python 的 Scripts 目录中，同样取决于您的 Python 安装位置：
+
+```
+C:\Users\<用户名>\AppData\Local\Programs\Python\Python<版本>\Scripts\
+```
+
+或
+
+```
+C:\Python<版本>\Scripts\
+```
+
+您可以通过以下命令查看包的具体安装位置：
+
+```bash
+pip show -f weibo-hotsearch-mcp
+```
+
+## 四、使用说明
+
+本服务使用微博移动版API获取热搜数据，无需提供Cookie即可正常工作。这带来以下优势：
+
+- **无需登录**：不需要微博账号即可获取热搜数据
+- **更高的安全性**：无需存储敏感的Cookie信息
+- **更简单的配置**：无需额外的环境变量配置
+
+### 4.1 在Claude Desktop中使用
 
 安装完成后，MCP服务将自动在Claude Desktop中注册。使用步骤如下：
 
@@ -110,9 +185,33 @@ Dynamic: summary
 3. 在弹出的菜单中选择"微博热搜"或"微博热搜高级版"
 4. 现在您可以在对话中使用微博热搜服务了
 
-## 五、在CLine插件中配置（VSCode、JetBrains等）
+### 4.2 在CLine插件中配置
 
-### 5.1 VSCode中配置CLine插件
+如果您使用VSCode或JetBrains IDE的CLine插件，可以按以下方式配置：
+
+1. 打开MCP配置文件（位于`%APPDATA%\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\mcp_settings.json`）
+2. 在微博热搜服务配置中添加配置，如下所示：
+
+```json
+"weibo-hotsearch": {
+  "command": "weibo-mcp-advanced",
+  "disabled": false,
+  "alwaysAllow": []
+}
+```
+
+## 五、在Claude Desktop中使用
+
+安装完成后，MCP服务将自动在Claude Desktop中注册。使用步骤如下：
+
+1. 打开Claude Desktop应用
+2. 在对话框中，点击右下角的"+"按钮
+3. 在弹出的菜单中选择"微博热搜"或"微博热搜高级版"
+4. 现在您可以在对话中使用微博热搜服务了
+
+## 六、在CLine插件中配置（VSCode、JetBrains等）
+
+### 6.1 VSCode中配置CLine插件
 
 1. 确保已安装CLine插件
 2. 找到CLine的MCP配置文件，位于：
@@ -127,22 +226,17 @@ Dynamic: summary
 
 ```json
 "weibo-hotsearch": {
-  "command": "cmd",
-  "args": [
-    "/c",
-    "python",
-    "{weibo_hotsearch_mcp}\\weibo_hotsearch_mcp_advanced.py"
-  ],
+  "command": "weibo-mcp-advanced",
   "disabled": false,
   "alwaysAllow": []
 }
 ```
 
 注意：
-- 注意：将路径中的`{weibo_hotsearch_mcp}`替换为您的weibo_hotsearch_mcp文件夹目录
-- 如果您使用的是基础版，请将路径中的`weibo_hotsearch_mcp_advanced.py`替换为`weibo_hotsearch_mcp.py`
+- 使用 pip 安装后，可以直接使用命令名称而不需要指定完整路径
+- 如果您使用的是基础版，请将命令改为 `weibo-mcp-basic`
 
-### 5.2 JetBrains IDE中配置CLine插件
+### 6.2 JetBrains IDE中配置CLine插件
 
 1. 确保已安装CLine插件
 2. 在JetBrains IDE中，CLine插件使用与VSCode相同的配置文件
@@ -155,12 +249,7 @@ Dynamic: summary
 **基础版：**
 ```json
 "weibo-hotsearch": {
-  "command": "cmd",
-  "args": [
-    "/c",
-    "python",
-    "{weibo_hotsearch_mcp}\\weibo_hotsearch_mcp.py"
-  ],
+  "command": "weibo-mcp-basic",
   "disabled": false,
   "alwaysAllow": []
 }
@@ -169,20 +258,13 @@ Dynamic: summary
 **高级版：**
 ```json
 "weibo-hotsearch-advanced": {
-  "command": "cmd",
-  "args": [
-    "/c",
-    "python",
-    "{weibo_hotsearch_mcp}\\weibo_hotsearch_mcp_advanced.py"
-  ],
+  "command": "weibo-mcp-advanced",
   "disabled": false,
   "alwaysAllow": []
 }
 ```
 
-注意：将路径中的`<用户名>`替换为您的Windows用户名
-
-### 5.3 RooCode插件配置
+### 6.3 RooCode插件配置
 
 1. 确保已安装RooCode插件
 2. RooCode插件也使用与CLine相同的MCP配置文件
@@ -195,12 +277,7 @@ Dynamic: summary
 **基础版：**
 ```json
 "weibo-hotsearch": {
-  "command": "cmd",
-  "args": [
-    "/c",
-    "python",
-    "{weibo_hotsearch_mcp}\\weibo_hotsearch_mcp.py"
-  ],
+  "command": "weibo-mcp-basic",
   "disabled": false,
   "alwaysAllow": []
 }
@@ -209,30 +286,23 @@ Dynamic: summary
 **高级版：**
 ```json
 "weibo-hotsearch-advanced": {
-  "command": "cmd",
-  "args": [
-    "/c",
-    "python",
-    "{weibo_hotsearch_mcp}\\weibo_hotsearch_mcp_advanced.py"
-  ],
+  "command": "weibo-mcp-advanced",
   "disabled": false,
   "alwaysAllow": []
 }
 ```
 
-注意：将路径中的`{weibo_hotsearch_mcp}`替换为您的weibo_hotsearch_mcp文件夹目录
-
-## 六、使用示例
+## 七、使用示例
 
 安装并配置完成后，您可以在Claude中使用以下提示来获取微博热搜：
 
-### 6.1 基础版使用示例
+### 7.1 基础版使用示例
 
 1. "获取当前微博热搜榜"
 2. "分析当前微博热搜话题"
 3. "查看微博热门话题"
 
-### 6.2 高级版使用示例
+### 7.2 高级版使用示例
 
 1. "获取前5条微博热搜"
 2. "搜索包含'电影'的热搜话题"
@@ -241,7 +311,7 @@ Dynamic: summary
 
 Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
 
-## 七、故障排除
+## 八、故障排除
 
 如果遇到问题，请尝试以下解决方法：
 
@@ -249,106 +319,52 @@ Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
    - 检查Python环境是否正确
    - 确认所有依赖包已安装
    - 检查网络连接
+   - 尝试重新安装包：`pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git --force-reinstall`
 
 2. **无法获取热搜数据**：
    - 检查网络连接
    - 确认微博网站是否可访问
-   - 检查weibo_hotsearch.py文件是否存在并正确配置
+   - 检查微博移动版API是否发生变化
 
 3. **Claude无法识别服务**：
    - 重新安装MCP服务
    - 重启Claude Desktop应用
    - 检查CLine插件配置是否正确
+   - 确认命令行可以正常启动服务：`weibo-mcp-advanced`
 
-## 八、高级配置
+4. **找不到命令**：
+   - 确认Python的Scripts目录已添加到系统环境变量中
+   - 尝试使用完整路径运行命令，例如：`C:\Users\<用户名>\AppData\Local\Programs\Python\Python<版本>\Scripts\weibo-mcp-advanced.exe`
+   - 重新安装包并检查是否有错误信息
 
-### 8.1 自定义服务名称
+## 九、高级配置
 
-如果您想使用不同的服务名称，可以修改安装命令中的`--name`参数：
+### 9.1 自定义服务名称
+
+如果您想在从源代码安装时使用不同的服务名称，可以修改安装命令中的`--name`参数：
 
 ```
-python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with requests --with beautifulsoup4
+python -m fastmcp install weibo_hotsearch_mcp.py --name "自定义名称" --with httpx --with asyncio
 ```
 
-### 8.2 修改热搜数量
+注意：通过pip安装时，服务名称已固定为"微博热搜"（基础版）和"微博热搜高级版"（高级版）。
 
-如果您想修改返回的热搜数量，可以编辑`weibo_hotsearch.py`文件中的相关代码。
+### 9.2 修改热搜数量
 
-### 8.3 自定义缓存时间
+在高级版中，您可以使用 `get_top_n_hot` 工具指定要获取的热搜数量，无需修改代码。
 
-在高级版中，您可以通过修改`weibo_hotsearch_mcp_advanced.py`文件中的`cache["ttl"]`值来调整缓存有效期。
+### 9.3 自定义缓存时间
 
-### 8.4 自定义Cookie数据
+在高级版中，缓存有效期默认为5分钟（300秒）。如果您需要修改缓存时间，可以编辑安装目录中的 `weibo_hotsearch_mcp/advanced.py` 文件，找到并修改以下代码行：
 
-您可以通过环境变量传递自定义的Cookie数据，而不是使用代码中硬编码的默认值。这在以下情况特别有用：
-
-- 当默认Cookie过期或失效时
-- 需要使用自己的微博账号权限获取更多数据时
-- 在不同环境中部署服务时
-
-#### 8.4.1 通过mcp_settings.json配置Cookie
-
-1. 打开MCP配置文件（位于`%APPDATA%\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\mcp_settings.json`）
-2. 在微博热搜服务配置中添加`env`对象，如下所示：
-
-```json
-"weibo-hotsearch": {
-  "command": "cmd",
-  "args": [
-    "/c",
-    "python",
-    "{weibo_hotsearch_mcp}\\weibo_hotsearch_mcp_advanced.py"
-  ],
-  "disabled": false,
-  "env": {
-    "WEIBO_COOKIE": "你的微博Cookie数据"
-  },
-  "alwaysAllow": []
+```python
+cache = {
+    "data": None,
+    "timestamp": 0,
+    "ttl": 300  # 缓存有效期5分钟，可以根据需要调整此值
 }
 ```
 
-3. 将`"你的微博Cookie数据"`替换为您的实际Cookie值
+## 十、许可证
 
-#### 8.4.2 获取微博Cookie
-
-1. 登录微博网站(https://weibo.com)
-2. 在浏览器中打开开发者工具（按F12或右键点击页面并选择"检查"）
-3. 切换到"网络"(Network)选项卡
-4. 刷新页面
-5. 在请求列表中找到任意一个请求，点击它
-6. 在请求头(Headers)中找到"Cookie"字段
-7. 复制完整的Cookie值
-
-**注意**：Cookie中包含敏感信息，请勿分享给他人或在公共场合暴露。
-
-#### 8.4.3 其他MCP服务的Cookie配置
-
-同样的方法也适用于其他MCP服务，如高德地图服务等。您只需要在相应的服务配置中添加`env`对象，并设置所需的环境变量即可。例如：
-
-```json
-"amap-amap-sse": {
-  "url": "https://mcp.amap.com/sse?key=YOUR_API_KEY",
-  "env": {
-    "COOKIE": "你的高德地图Cookie数据"
-  }
-}
-```
-
-## 九、许可证
-
-本项目采用 [MIT 许可证](./LICENSE) 开源。MIT 许可证是一种宽松的软件许可证，它允许任何人以任何方式使用本代码，只要保留原始许可证和版权声明。
-
-### 9.1 MIT 许可证主要条款
-
-- 允许任何人自由使用、复制、修改、合并、发布、分发、再许可和/或销售本软件的副本
-- 要求在所有副本或实质性使用本软件的地方包含原始许可证和版权声明
-- 软件按"原样"提供，不提供任何形式的保证
-
-### 9.2 使用本项目
-
-如果您想在自己的项目中使用本代码，只需确保：
-
-1. 包含原始的 LICENSE 文件
-2. 保留原始的版权声明
-
-完整的许可证文本可以在项目根目录的 [LICENSE](./LICENSE) 文件中找到。
+本项目采用 [MIT 许可证](./LICENSE) 开源。

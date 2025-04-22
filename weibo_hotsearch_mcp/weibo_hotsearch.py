@@ -56,7 +56,22 @@ def get_weibo_hot() -> List[str]:
     # 添加重试机制
     for i in range(3):  # 最多重试3次
         try:
-            return asyncio.run(get_weibo_hot_async())
+            # 检查是否已有事件循环
+            try:
+                loop = asyncio.get_event_loop()
+            except RuntimeError:
+                # 如果没有事件循环，创建一个新的
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+
+            # 使用现有事件循环运行异步函数
+            if loop.is_running():
+                # 如果事件循环已经在运行，使用create_task和Future
+                future = asyncio.run_coroutine_threadsafe(get_weibo_hot_async(), loop)
+                return future.result(10)  # 10秒超时
+            else:
+                # 如果事件循环没有运行，使用run_until_complete
+                return loop.run_until_complete(get_weibo_hot_async())
         except Exception as e:
             if i == 2:  # 最后一次重试仍失败
                 return [f"获取微博热搜失败: {str(e)}"]
