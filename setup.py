@@ -29,7 +29,7 @@ setup(
         "fastmcp>=2.0.0",
         "httpx",
         "asyncio",
-        "uvx",
+        "uvx==1.0.0",
     ],
     entry_points={
         "console_scripts": [
