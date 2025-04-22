@@ -92,15 +92,17 @@
 
 请参考完整文档了解如何在VSCode、JetBrains等IDE的CLine插件中配置。
 
-自定义Cookie数据
-~~~~~~~~~~~~~~
+配置Cookie数据（必需）
+~~~~~~~~~~~~~~~~~
 
-您可以通过环境变量传递自定义的Cookie数据:
+必须通过环境变量传递Cookie数据才能正常使用服务:
 
 .. code-block:: bash
 
     export WEIBO_COOKIE="你的微博Cookie数据"
     weibo-mcp-advanced
+
+注意: 如果未设置 WEIBO_COOKIE 环境变量，服务将无法正常获取微博热搜数据。
 
 许可证
 ------

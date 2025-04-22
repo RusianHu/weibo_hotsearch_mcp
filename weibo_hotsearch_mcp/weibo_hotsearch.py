@@ -4,9 +4,12 @@ import time
 import os
 
 def get_headers():
-    # 从环境变量中获取Cookie，如果没有则使用默认值
-    default_cookie = 'SUB=_114514'
-    cookie = os.environ.get('WEIBO_COOKIE', default_cookie)
+    # 从环境变量中获取Cookie
+    cookie = os.environ.get('WEIBO_COOKIE')
+
+    # 如果环境变量中没有设置Cookie，则返回错误信息
+    if not cookie:
+        raise ValueError("未设置WEIBO_COOKIE环境变量，请设置后再试")
 
     return {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -18,13 +21,19 @@ def get_headers():
 def get_weibo_hot():
     url = 'https://s.weibo.com/top/summary'
     try:
+        # 先检查是否设置了Cookie
+        try:
+            headers = get_headers()
+        except ValueError as e:
+            return f"获取微博热搜失败: {str(e)}"
+
         # 添加重试机制和延迟
         for i in range(3):  # 最多重试3次
             try:
                 # 显式禁用代理
                 session = requests.Session()
                 session.trust_env = False  # 不读取系统代理设置
-                response = session.get(url, headers=get_headers(), timeout=10)
+                response = session.get(url, headers=headers, timeout=10)
                 if response.status_code == 200:
                     soup = BeautifulSoup(response.text, 'html.parser')
                     hot_items = soup.select('.td-02 a')
