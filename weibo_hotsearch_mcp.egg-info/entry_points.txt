@@ -1,4 +1,0 @@
-[console_scripts]
-weibo-mcp = weibo_hotsearch_mcp.cli:main
-weibo-mcp-advanced = weibo_hotsearch_mcp.advanced:run
-weibo-mcp-basic = weibo_hotsearch_mcp.basic:run

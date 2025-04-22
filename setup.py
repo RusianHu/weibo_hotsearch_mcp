@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="weibo-hotsearch-mcp",
-    version="1.0.3",
+    version="1.0.4",
     author="RusianHu",
     author_email="rusianhu@example.com",
     description="微博热搜MCP服务",
@@ -29,12 +29,14 @@ setup(
         "fastmcp>=2.0.0",
         "httpx",
         "asyncio",
+        "uvx",
     ],
     entry_points={
         "console_scripts": [
             "weibo-mcp=weibo_hotsearch_mcp.cli:main",
             "weibo-mcp-basic=weibo_hotsearch_mcp.basic:run",
             "weibo-mcp-advanced=weibo_hotsearch_mcp.advanced:run",
+            "weibo-hotsearch-mcp=weibo_hotsearch_mcp.cli:main",
         ],
     },
 )

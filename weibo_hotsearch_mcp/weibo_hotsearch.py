@@ -70,7 +70,7 @@ async def get_weibo_hot_async() -> List[str]:
         tb_str = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
         print(f"异步获取热搜异常: {error_msg}")
         print(f"异常详情:\n{tb_str}")
-        return [f"获取微博热搜失败: {error_msg}"]
+        return [f"获取微博热搜失败: {error_msg}\n异常详情:\n{tb_str}"]
 
 def get_weibo_hot() -> List[str]:
     """
@@ -105,7 +105,7 @@ def get_weibo_hot() -> List[str]:
             print(f"同步获取热搜异常 (重试{i+1}/3): {error_msg}")
             print(f"异常详情:\n{tb_str}")
             if i == 2:  # 最后一次重试仍失败
-                return [f"获取微博热搜失败: {error_msg}"]
+                return [f"获取微博热搜失败: {error_msg}\n异常详情:\n{tb_str}"]
             time.sleep(2)  # 等待2秒后重试
 
     # 如果异步方式失败，尝试使用同步方式
@@ -140,7 +140,7 @@ def get_weibo_hot() -> List[str]:
         tb_str = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
         print(f"同步备用方式异常: {error_msg}")
         print(f"异常详情:\n{tb_str}")
-        return [f"获取微博热搜失败: 所有方式均失败"]
+        return [f"获取微博热搜失败: 所有方式均失败\n异常详情:\n{tb_str}"]
 
 if __name__ == '__main__':
     hot_list = get_weibo_hot()

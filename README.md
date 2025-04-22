@@ -48,6 +48,7 @@
 - fastmcp：MCP服务框架
 - httpx：异步HTTP客户端
 - asyncio：异步编程库
+- uvx：用于简化Python包的启动
 
 ## 三、安装步骤
 
@@ -71,10 +72,18 @@ pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git --proxy sock
 ```bash
 weibo-mcp-basic
 ```
+或使用 uvx 启动：
+```bash
+uvx weibo-hotsearch-mcp
+```
 
 **高级版：**
 ```bash
 weibo-mcp-advanced
+```
+或使用 uvx 启动：
+```bash
+uvx weibo-hotsearch-mcp --advanced
 ```
 
 或者使用通用命令（默认启动基础版，使用 `--advanced` 参数启动高级版）：
@@ -164,7 +173,10 @@ pip show -f weibo-hotsearch-mcp
 
 ```json
 "weibo-hotsearch": {
-  "command": "weibo-mcp-advanced",
+  "command": "uvx",
+  "args": [
+    "weibo-hotsearch-mcp"
+  ],
   "disabled": false,
   "alwaysAllow": []
 }
@@ -196,15 +208,19 @@ pip show -f weibo-hotsearch-mcp
 
 ```json
 "weibo-hotsearch": {
-  "command": "weibo-mcp-advanced",
+  "command": "uvx",
+  "args": [
+    "weibo-hotsearch-mcp"
+  ],
   "disabled": false,
   "alwaysAllow": []
 }
 ```
 
 注意：
-- 使用 pip 安装后，可以直接使用命令名称而不需要指定完整路径
-- 如果您使用的是基础版，请将命令改为 `weibo-mcp-basic`
+- 使用 pip 安装后，可以直接使用 uvx 启动方式
+- 如果您使用的是基础版，请将命令参数改为 `["weibo-hotsearch-mcp"]`
+- 如果您使用的是高级版，请将命令参数改为 `["weibo-hotsearch-mcp", "--advanced"]`
 
 ### 6.2 JetBrains IDE中配置CLine插件
 
@@ -219,7 +235,10 @@ pip show -f weibo-hotsearch-mcp
 **基础版：**
 ```json
 "weibo-hotsearch": {
-  "command": "weibo-mcp-basic",
+  "command": "uvx",
+  "args": [
+    "weibo-hotsearch-mcp"
+  ],
   "disabled": false,
   "alwaysAllow": []
 }
@@ -228,7 +247,11 @@ pip show -f weibo-hotsearch-mcp
 **高级版：**
 ```json
 "weibo-hotsearch-advanced": {
-  "command": "weibo-mcp-advanced",
+  "command": "uvx",
+  "args": [
+    "weibo-hotsearch-mcp",
+    "--advanced"
+  ],
   "disabled": false,
   "alwaysAllow": []
 }
@@ -247,7 +270,10 @@ pip show -f weibo-hotsearch-mcp
 **基础版：**
 ```json
 "weibo-hotsearch": {
-  "command": "weibo-mcp-basic",
+  "command": "uvx",
+  "args": [
+    "weibo-hotsearch-mcp"
+  ],
   "disabled": false,
   "alwaysAllow": []
 }
@@ -256,7 +282,11 @@ pip show -f weibo-hotsearch-mcp
 **高级版：**
 ```json
 "weibo-hotsearch-advanced": {
-  "command": "weibo-mcp-advanced",
+  "command": "uvx",
+  "args": [
+    "weibo-hotsearch-mcp",
+    "--advanced"
+  ],
   "disabled": false,
   "alwaysAllow": []
 }
@@ -300,11 +330,12 @@ Claude将调用MCP服务获取最新的微博热搜数据并进行回复。
    - 重新安装MCP服务
    - 重启Claude Desktop应用
    - 检查CLine插件配置是否正确
-   - 确认命令行可以正常启动服务：`weibo-mcp-advanced`
+   - 确认命令行可以正常启动服务：`uvx weibo-hotsearch-mcp --advanced`
 
 4. **找不到命令**：
    - 确认Python的Scripts目录已添加到系统环境变量中
    - 尝试使用完整路径运行命令，例如：`C:\Users\<用户名>\AppData\Local\Programs\Python\Python<版本>\Scripts\weibo-mcp-advanced.exe`
+   - 确认已安装 uvx，如果没有则运行：`pip install uvx`
    - 重新安装包并检查是否有错误信息
 
 ## 九、高级配置
