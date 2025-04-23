@@ -22,11 +22,21 @@ pip install weibo-hotsearch-mcp --proxy socks5://127.0.0.1:10808
 pip install dist/weibo_hotsearch_mcp-1.0.0-py3-none-any.whl
 ```
 
-### 方法二：从源码安装
+### 方法二：从 GitHub 安装
+
+```bash
+# 直接从 GitHub 安装
+pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git
+
+# 如果需要使用代理
+pip install git+https://github.com/RusianHu/weibo_hotsearch_mcp.git --proxy socks5://127.0.0.1:10808
+```
+
+### 方法三：从源码安装
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/weibo_hotsearch_mcp.git
+git clone https://github.com/RusianHu/weibo_hotsearch_mcp.git
 cd weibo_hotsearch_mcp
 
 # 安装依赖
@@ -89,4 +99,4 @@ fastmcp install weibo_hotsearch_mcp.py
 
 ## 许可证
 
-MIT
+[MIT](LICENSE)
