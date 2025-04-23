@@ -1,42 +1,26 @@
 from setuptools import setup, find_packages
-import os
-
-# 读取README.md文件内容作为长描述
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
 
 setup(
     name="weibo-hotsearch-mcp",
-    version="1.0.4",
+    version="1.0.0",
+    description="微博热搜 MCP 服务",
     author="RusianHu",
-    author_email="rusianhu@example.com",
-    description="微博热搜MCP服务",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/RusianHu/weibo_hotsearch_mcp",
-    project_urls={
-        "Bug Tracker": "https://github.com/RusianHu/weibo_hotsearch_mcp/issues",
-        "Source Code": "https://github.com/RusianHu/weibo_hotsearch_mcp",
-    },
+    author_email="example@example.com",
     packages=find_packages(),
+    py_modules=["weibo_hotsearch_mcp", "weibo_hotsearch_no_cookie"],
+    install_requires=[
+        "fastmcp>=2.0.0",
+        "httpx>=0.28.0",
+    ],
+    entry_points={
+        "console_scripts": [
+            "weibo-hotsearch-mcp=weibo_hotsearch_mcp:main",
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.10",
-    install_requires=[
-        "fastmcp>=2.0.0",
-        "httpx",
-        "asyncio",
-        "uvx==1.0.0",
-    ],
-    entry_points={
-        "console_scripts": [
-            "weibo-mcp=weibo_hotsearch_mcp.cli:main",
-            "weibo-mcp-basic=weibo_hotsearch_mcp.basic:run",
-            "weibo-mcp-advanced=weibo_hotsearch_mcp.advanced:run",
-            "weibo-hotsearch-mcp=weibo_hotsearch_mcp.cli:main",
-        ],
-    },
+    python_requires=">=3.8",
 )
