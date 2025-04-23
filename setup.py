@@ -11,6 +11,7 @@ setup(
     install_requires=[
         "fastmcp>=2.0.0",
         "httpx>=0.28.0",
+        "nest_asyncio>=1.5.0",
     ],
     entry_points={
         "console_scripts": [

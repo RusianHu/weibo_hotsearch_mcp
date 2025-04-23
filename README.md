@@ -33,6 +33,17 @@ cd weibo_hotsearch_mcp
 pip install -e .
 ```
 
+## 安装到 Claude Desktop
+
+推荐使用这种方式安装，它会创建一个隔离的环境，更加可靠：
+
+```bash
+# 安装到 Claude Desktop
+fastmcp install weibo_hotsearch_mcp.py
+```
+
+安装成功后，您可以直接在 Claude Desktop 中使用这个服务。
+
 ## 在 Roo Code 插件中配置使用
 
 1. 安装 [Roo Code](https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline) VS Code 插件
@@ -44,9 +55,9 @@ pip install -e .
 
 ```json
 "weibo-hotsearch": {
-  "command": "uvx",
+  "command": "python",
   "args": [
-    "weibo-hotsearch-mcp"
+    "-m", "weibo_hotsearch_mcp"
   ],
   "alwaysAllow": [
     "get_hot_search"

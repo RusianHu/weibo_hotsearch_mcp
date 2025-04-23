@@ -6,8 +6,12 @@
 
 import httpx
 import asyncio
+import nest_asyncio
 from typing import List, Dict, Any, Optional
 import time
+
+# 应用 nest_asyncio 补丁，允许嵌套事件循环
+nest_asyncio.apply()
 
 # 热搜API端点
 HOT_SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
@@ -22,28 +26,28 @@ DEFAULT_HEADERS = {
 async def get_weibo_hot_async() -> List[str]:
     """
     异步获取微博热搜榜前10条内容
-    
+
     Returns:
         List[str]: 热搜列表，如果获取失败则返回错误信息
     """
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(HOT_SEARCH_URL, headers=DEFAULT_HEADERS, timeout=10.0)
-            
+
             if response.status_code == 200:
                 result = response.json()
-                
+
                 # 检查响应是否包含有效数据
                 if result.get('ok') == 1 and 'data' in result and 'cards' in result['data']:
                     hot_searches = []
-                    
+
                     # 提取热搜数据
                     for card in result['data']['cards']:
                         if 'card_group' in card:
                             for item in card['card_group']:
                                 if 'desc' in item:
                                     hot_searches.append(item['desc'])
-                    
+
                     return hot_searches[:10]  # 只返回前10条
                 else:
                     return ["获取微博热搜失败: 响应格式不符合预期"]
@@ -55,19 +59,20 @@ async def get_weibo_hot_async() -> List[str]:
 def get_weibo_hot() -> List[str]:
     """
     同步获取微博热搜榜前10条内容
-    
+
     Returns:
         List[str]: 热搜列表，如果获取失败则返回错误信息
     """
     # 添加重试机制
     for i in range(3):  # 最多重试3次
         try:
+            # 使用 nest_asyncio 后，可以安全地使用 asyncio.run()
             return asyncio.run(get_weibo_hot_async())
         except Exception as e:
             if i == 2:  # 最后一次重试仍失败
                 return [f"获取微博热搜失败: {str(e)}"]
             time.sleep(2)  # 等待2秒后重试
-    
+
     return ["获取微博热搜失败: 未知错误"]
 
 if __name__ == '__main__':
