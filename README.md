@@ -1,5 +1,7 @@
 # 微博热搜 MCP 服务
 
+[![smithery badge](https://smithery.ai/badge/@RusianHu/weibo_hotsearch_mcp)](https://smithery.ai/server/@RusianHu/weibo_hotsearch_mcp)
+
 这是一个基于 [fastmcp](https://github.com/jlowin/fastmcp) 创建的微博热搜 MCP 服务，可以在 Claude 等支持 MCP 协议的 AI 助手中使用。
 
 ## 功能
@@ -8,6 +10,14 @@
 - 无需提供 Cookie，使用微博移动版 API
 
 ## 安装方法
+
+### 安装方法：通过 Smithery 工具
+
+为了在 Claude Desktop 中自动安装 weibo_hotsearch_mcp，请使用 [Smithery](https://smithery.ai/server/@RusianHu/weibo_hotsearch_mcp)：
+
+```bash
+npx -y @smithery/cli install @RusianHu/weibo_hotsearch_mcp --client claude
+```
 
 ### 方法一：从 GitHub 安装
 
