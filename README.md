@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/rusianhu-weibo-hotsearch-mcp-badge.png)](https://mseep.ai/app/rusianhu-weibo-hotsearch-mcp)
+
 # 微博热搜 MCP 服务
 
 这是一个基于 [fastmcp](https://github.com/jlowin/fastmcp) 创建的微博热搜 MCP 服务，可以在 Claude 等支持 MCP 协议的 AI 助手中使用。
